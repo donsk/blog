@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Note Detail</title>
+    <link rel="stylesheet" href="https://blog.bleaksmile.com/static/styles.css">
+    <link rel="stylesheet" href="https://blog.bleaksmile.com/static/highlight.css">
+    <script src="https://blog.bleaksmile.com/static/marked.min.js"></script>
+    <script src="https://blog.bleaksmile.com/static/highlight.min.js"></script>
+</head>
+<body>
+    <div id="note-app">
+        <h1 id="note-title"></h1>
+        <div id="note-content"></div>
+        <p><small id="note-date"></small></p>
+        <div id="error" style="color: red;"></div>
+    </div>
+    <script>
+        // 确保 note_id 正确传递
+        const noteId = "{{ note_id }}";
+
+        // 验证 marked 是否加载
+        if (typeof marked === 'undefined') {
+            document.getElementById('error').textContent = 'Failed to load Marked.js library.';
+        } else if (typeof hljs === 'undefined') {
+            document.getElementById('error').textContent = 'Failed to load Highlight.js library.';
+        } else {
+            // 加载笔记
+            fetch(`/api/note/${noteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('error').textContent = data.error;
+                        return;
+                    }
+                    document.getElementById('note-title').textContent = data.title;
+                    document.getElementById('note-date').textContent = data.created_at;
+                    const contentDiv = document.getElementById('note-content');
+                    contentDiv.innerHTML = marked.parse(data.content);
+
+                    // 初始化代码高亮
+                    document.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                        const button = document.createElement('button');
+                        button.className = 'copy-btn';
+                        button.textContent = 'Copy';
+                        button.onclick = () => {
+                            console.log('Copying content:', block.textContent);
+                            navigator.clipboard.writeText(block.textContent)
+                                .then(() => {
+                                    button.textContent = 'Copied!';
+                                    setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                                })
+                                .catch(err => {
+                                    console.error('Failed to copy:', err);
+                                    button.textContent = 'Failed';
+                                });
+                        };
+                        block.parentElement.style.position = 'relative';
+                        block.parentElement.appendChild(button);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('error').textContent = 'Failed to load note: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>

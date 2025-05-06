@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Blog</title>
+    <link rel="stylesheet" href="https://blog.bleaksmile.com/static/styles.css">
+</head>
+<body>
+    <div id="app">
+        <h1>My Blog</h1>
+        <div class="input-section">
+            <input type="text" id="newTitle" placeholder="Enter note title...">
+            <textarea id="newNote" placeholder="Write your note in Markdown..."></textarea>
+            <button onclick="saveNote()">Save Note</button>
+        </div>
+        <div id="error" style="color: red;"></div>
+        <div id="notes"></div>
+    </div>
+    <script>
+        // 加载笔记
+        function fetchNotes() {
+            fetch('/api/notes')
+                .then(response => response.json())
+                .then(data => {
+                    const notesDiv = document.getElementById('notes');
+                    notesDiv.innerHTML = '';
+                    if (Array.isArray(data)) {
+                        if (data.length === 0) {
+                            notesDiv.innerHTML = '<p>No notes yet.</p>';
+                        } else {
+                            data.forEach(note => {
+                                const noteDiv = document.createElement('div');
+                                noteDiv.className = 'note-title';
+                                noteDiv.innerHTML = `
+                                    <a href="/note/${note.id}" target="_blank">${note.title}</a>
+                                    <p>${note.created_at}</p>
+                                `;
+                                notesDiv.appendChild(noteDiv);
+                            });
+                        }
+                    } else {
+                        document.getElementById('error').textContent = 'Error: ' + (data.error || 'Invalid response from server');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('error').textContent = 'Failed to load notes: ' + error.message;
+                });
+        }
+
+        // 保存笔记
+        function saveNote() {
+            const title = document.getElementById('newTitle').value;
+            const content = document.getElementById('newNote').value;
+            if (!title || !content) {
+                document.getElementById('error').textContent = 'Please enter both title and content.';
+                return;
+            }
+            fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, content: content })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('newTitle').value = '';
+                    document.getElementById('newNote').value = '';
+                    document.getElementById('error').textContent = '';
+                    fetchNotes();
+                } else {
+                    document.getElementById('error').textContent = data.error;
+                }
+            })
+            .catch(error => {
+                document.getElementById('error').textContent = 'Failed to save note: ' + error.message;
+            });
+        }
+
+        // 初次加载
+        fetchNotes();
+    </script>
+</body>
+</html>

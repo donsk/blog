@@ -1,0 +1,106 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    line-height: 1.6;
+    color: #333;
+}
+#app, #note-app {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    color: #2c3e50;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+.input-section {
+    margin-bottom: 20px;
+}
+input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+button:hover {
+    background-color: #45a049;
+}
+.note-title {
+    padding: 15px;
+    margin: 10px 0;
+    background: #fafafa;
+    border-radius: 4px;
+    border-left: 4px solid #4CAF50;
+    transition: background 0.3s;
+}
+.note-title:hover {
+    background: #f0f0f0;
+}
+.note-title a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+.note-title a:hover {
+    text-decoration: underline;
+}
+.note-title p {
+    color: #666;
+    margin: 5px 0 0;
+    font-size: 0.9em;
+}
+#note-content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+    padding: 15px;
+    background: #fafafa;
+    border-radius: 4px;
+}
+pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 5px;
+    position: relative;
+    overflow-x: auto;
+    font-family: 'Consolas', monospace;
+}
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.copy-btn:hover {
+    background: #555;
+}
